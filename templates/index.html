@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reminv</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen font-sans">
+
+    <div class="max-w-md mx-auto p-4 pb-24">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold tracking-wider text-blue-400">REMINV.</h1>
+            <span class="text-xs text-gray-400">{{ today }}</span>
+        </div>
+
+        <div class="space-y-3">
+            {% for task in tasks %}
+            <div
+                class="bg-gray-800 p-4 rounded-xl border-l-4 {{ 'border-red-500' if task.difficulty == 3 else ('border-yellow-500' if task.difficulty == 2 else 'border-green-500') }} shadow-lg relative group">
+
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-semibold text-lg">{{ task.title }}</h3>
+                        <p class="text-xs text-gray-400 mt-1">
+                            <i class="far fa-clock"></i> {{ task.deadline }}
+                            {% if task.difficulty == 3 %} <span class="text-red-400 ml-2 font-bold">HARD</span> {% endif
+                            %}
+                        </p>
+                    </div>
+
+                    <div class="flex space-x-2">
+                        <a href="/done/{{ task.id }}" class="text-green-500 hover:text-green-400"><i
+                                class="fas fa-check-circle fa-lg"></i></a>
+                        <a href="/delete/{{ task.id }}" class="text-gray-600 hover:text-red-500"><i
+                                class="fas fa-trash"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center text-gray-500 mt-10">
+                <p>Belum ada tugas. Santuy dulu!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <button onclick="document.getElementById('addModal').classList.remove('hidden')"
+        class="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-full shadow-2xl transition transform hover:scale-110">
+        <i class="fas fa-plus fa-lg"></i>
+    </button>
+
+    <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-800 rounded-2xl p-6 w-full max-w-sm">
+            <h2 class="text-xl font-bold mb-4">Tugas Baru</h2>
+            <form action="/add" method="POST">
+                <input type="text" name="title" placeholder="Mau ngapain?"
+                    class="w-full bg-gray-700 p-3 rounded-lg mb-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required>
+
+                <div class="flex space-x-2 mb-3">
+                    <select name="difficulty" class="w-1/2 bg-gray-700 p-3 rounded-lg text-white">
+                        <option value="1">Easy</option>
+                        <option value="2" selected>Medium</option>
+                        <option value="3">Hard</option>
+                    </select>
+                    <input type="date" name="deadline" class="w-1/2 bg-gray-700 p-3 rounded-lg text-white" required>
+                </div>
+
+                <div class="flex justify-end space-x-2 mt-4">
+                    <button type="button" onclick="document.getElementById('addModal').classList.add('hidden')"
+                        class="text-gray-400 px-4 py-2">Batal</button>
+                    <button type="submit" class="bg-blue-600 px-6 py-2 rounded-lg font-bold">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
