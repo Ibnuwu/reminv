@@ -8,19 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #020205;
-            --bg-card: rgba(20, 20, 30, 0.5);
-            --border: rgba(139, 92, 246, 0.3);
+            --bg-body: #050505;
+            --bg-card: #121212;
+            --border: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
-            --text-muted: #9ca3af;
+            --text-muted: #888;
             --accent: #8b5cf6;
-            --accent-light: #a78bfa;
-            --accent-glow: rgba(139, 92, 246, 0.3);
-            --danger: #ff3333;
-            /* WARNA DIFFICULTY */
-            --diff-easy: #10b981;
-            --diff-med: #facc15;
-            --diff-hard: #ef4444;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            --c-easy: #4ade80;
+            --c-mid: #facc15;
+            --c-hard: #ef4444;
         }
 
         * {
@@ -37,31 +34,7 @@
             height: 100vh;
             display: flex;
             overflow: hidden;
-            background-image: linear-gradient(135deg, #0a0a10 0%, #151020 50%, #05020a 100%);
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 40%);
-            opacity: 0.1;
-            animation: auroraMove 15s infinite alternate linear;
-            pointer-events: none;
-        }
-
-        @keyframes auroraMove {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            100% {
-                transform: translate(50px, 50px);
-            }
+            background-image: radial-gradient(circle at 50% 120%, #1a0b2e 0%, #05020a 60%);
         }
 
         .no-scrollbar {
@@ -79,23 +52,21 @@
             overflow-y: auto;
             max-width: 600px;
             margin: 0 auto;
-            padding-bottom: 150px;
+            padding-bottom: 160px;
             width: 100%;
             position: relative;
             z-index: 10;
         }
 
-        /* HEADER CLEAN */
         .header {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-bottom: 5px;
         }
 
         .logo {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 800;
             letter-spacing: -0.5px;
         }
@@ -105,163 +76,206 @@
         }
 
         .profile-pic {
-            width: 35px;
-            height: 35px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1.5px solid var(--accent);
-            box-shadow: 0 0 5px var(--accent-glow);
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
         }
 
+        /* --- MASCOTS (CENTERED & POP-UP BEHIND NAV) --- */
         .mascot-container {
             position: fixed;
             bottom: 0;
+            left: 0;
             width: 100%;
             height: 0;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             pointer-events: none;
-            z-index: 1;
+            z-index: 90;
+            /* Di belakang Nav (z-100) */
         }
 
         .mascot {
             position: absolute;
-            bottom: -20px;
-            width: 150px;
-            transition: all 0.5s ease;
+            width: 210px;
+            /* Ukuran pas */
+            left: 50%;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
+        /* Rotasi dikit biar gaya */
         .mascot.left {
-            left: -20px;
+            margin-left: -120px;
+            transform: rotate(-3deg);
         }
 
         .mascot.right {
-            right: -20px;
+            margin-left: 120px;
+            transform: rotate(3deg);
         }
 
         .mascot.active {
             opacity: 1;
-            filter: drop-shadow(0 0 10px var(--accent-glow));
-            transform: scale(1.02);
-            animation: floating 4s infinite;
-            z-index: 2;
+            /* INI KUNCINYA: Atasan dikit biar keliatan muncul */
+            bottom: 50px;
+            filter: drop-shadow(0 0 30px var(--accent-glow));
+            animation: floatSimple 6s ease-in-out infinite;
         }
 
-        @keyframes floating {
+        @keyframes floatSimple {
 
             0%,
             100% {
-                transform: translateY(0) scale(1.02);
+                transform: translateY(0) rotate(var(--rot));
             }
 
             50% {
-                transform: translateY(-10px) scale(1.02);
+                transform: translateY(-10px) rotate(var(--rot));
             }
         }
 
-        .mascot.inactive {
-            opacity: 0.2;
-            filter: grayscale(100%) brightness(0.3);
-            transform: scale(0.9) translateY(20px);
-            z-index: 1;
+        .mascot.left.active {
+            --rot: -3deg;
         }
 
+        .mascot.right.active {
+            --rot: 3deg;
+        }
+
+        .mascot.inactive {
+            opacity: 0;
+            bottom: -200px;
+            transform: scale(0.8);
+        }
+
+        /* TASK LIST */
         .task-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .task-card {
-            background: rgba(20, 20, 25, 0.6);
-            backdrop-filter: blur(10px);
+            background: rgba(20, 20, 22, 0.7);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--border);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            border-radius: 16px;
+            padding: 16px 20px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: 0.3s;
+            transition: 0.2s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .task-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
+        .task-info {
+            flex: 1;
+            margin-right: 15px;
         }
 
         .task-title {
-            font-size: 0.95rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             color: #fff;
             margin-bottom: 6px;
             word-break: break-word;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* BADGE DIFFICULTY DI LIST TUGAS (DI BAGUSIN) */
-        .badge {
-            font-size: 0.6rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 1px solid transparent;
-        }
-
-        .b-easy {
-            color: var(--diff-easy);
-            border-color: var(--diff-easy);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .b-med {
-            color: var(--diff-med);
-            border-color: var(--diff-med);
-            background: rgba(250, 204, 21, 0.1);
-        }
-
-        .b-hard {
-            color: var(--diff-hard);
-            border-color: var(--diff-hard);
-            background: rgba(239, 68, 68, 0.1);
         }
 
         .task-meta {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 700;
+            font-size: 0.75rem;
+            font-weight: 800;
             text-transform: uppercase;
             display: flex;
             align-items: center;
+            gap: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .lvl-1 {
+            color: var(--c-easy);
+        }
+
+        .lvl-2 {
+            color: var(--c-mid);
+        }
+
+        .lvl-3 {
+            color: var(--c-hard);
+        }
+
+        /* --- BUTTONS: ICON ONLY (No Background Color) --- */
+        .actions {
+            display: flex;
             gap: 5px;
         }
 
-        .btn-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
+        .btn-bubble {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            /* Kotak rounded */
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            /* Border tipis banget */
+            background: rgba(255, 255, 255, 0.02);
+            /* Hampir transparan */
             text-decoration: none;
-            background: rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
         }
 
-        /* MODAL BUBBLE */
+        /* Setan Icon Tebal & Neon */
+        .btn-bubble svg {
+            width: 24px;
+            height: 24px;
+            stroke-width: 3;
+            /* Tebal */
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        /* DONE (HIJAU) */
+        .btn-bubble.done {
+            color: #4ade80;
+        }
+
+        .btn-bubble.done svg {
+            stroke: #4ade80;
+        }
+
+        .btn-bubble.done:active {
+            background: rgba(74, 222, 128, 0.2);
+            transform: scale(0.9);
+        }
+
+        /* DELETE (MERAH) */
+        .btn-bubble.del {
+            color: #ef4444;
+        }
+
+        .btn-bubble.del svg {
+            stroke: #ef4444;
+        }
+
+        .btn-bubble.del:active {
+            background: rgba(239, 68, 68, 0.2);
+            transform: scale(0.9);
+        }
+
+        /* MODAL */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
             z-index: 200;
             display: none;
             align-items: flex-end;
@@ -276,176 +290,177 @@
         @keyframes slideUp {
             from {
                 transform: translateY(100%);
-                opacity: 0;
             }
 
             to {
                 transform: translateY(0);
-                opacity: 1;
             }
         }
 
         .bubble-card {
-            background: #151518;
-            width: 90%;
-            max-width: 380px;
-            border-radius: 24px;
+            background: #121215;
+            width: 92%;
+            max-width: 400px;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
             padding: 24px;
             border: 1px solid var(--border);
-            box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            border-radius: 30px;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .bubble-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
 
         .bubble-title {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 800;
             color: white;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .close-btn {
-            background: rgba(255, 255, 255, 0.1);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #666;
+            font-size: 1.5rem;
             cursor: pointer;
-            color: #fff;
+            line-height: 1;
+            padding: 5px;
         }
 
         .input-box {
             width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: 12px;
+            background: #1e1e24;
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
             color: white;
-            font-size: 0.95rem;
+            font-size: 1rem;
             outline: none;
             margin-bottom: 20px;
-            font-family: inherit;
+            font-weight: 600;
         }
 
         .input-box:focus {
-            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+            background: #25252b;
         }
 
-        /* --- SLIDER & DIFFICULTY BARU --- */
-        .section-label {
-            font-size: 0.75rem;
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .control-box {
+            background: #1e1e24;
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .box-label {
+            font-size: 0.7rem;
             color: #888;
             font-weight: 700;
-            margin-bottom: 8px;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
-        /* Slider */
-        .slider-wrap {
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-
-        .deadline-text {
-            color: var(--accent-light);
-            font-weight: 800;
+        .box-val {
             font-size: 0.9rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .box-val.highlight {
+            color: var(--accent);
         }
 
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
             background: transparent;
+            margin-top: 10px;
         }
 
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
             height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            background: #333;
+            border-radius: 10px;
         }
 
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 20px;
-            width: 20px;
+            height: 18px;
+            width: 18px;
             border-radius: 50%;
-            background: var(--accent);
-            margin-top: -7px;
-            border: 3px solid #fff;
-            cursor: pointer;
+            background: white;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
-        /* CUSTOM DIFFICULTY SELECTOR (CHIPS) */
         .diff-selector {
             display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
+            gap: 4px;
+            height: 100%;
+            align-items: center;
         }
 
         .diff-option {
             flex: 1;
+            height: 100%;
             position: relative;
         }
 
         .diff-option input {
             position: absolute;
+            width: 100%;
+            height: 100%;
             opacity: 0;
             cursor: pointer;
+            z-index: 2;
         }
 
         .diff-label {
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            color: #888;
-            font-size: 0.8rem;
-            font-weight: 700;
-            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #555;
+            background: #25252b;
+            border-radius: 8px;
             transition: 0.2s;
         }
 
-        /* Warna saat dipilih */
-        .diff-option input:checked+.diff-label.lbl-easy {
-            background: var(--diff-easy);
+        .diff-option input:checked+.diff-label {
             color: #000;
-            border-color: var(--diff-easy);
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+            transform: scale(1.05);
         }
 
-        .diff-option input:checked+.diff-label.lbl-med {
-            background: var(--diff-med);
-            color: #000;
-            border-color: var(--diff-med);
-            box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+        .diff-option input:checked+.diff-label.easy {
+            background: var(--c-easy);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
         }
 
-        .diff-option input:checked+.diff-label.lbl-hard {
-            background: var(--diff-hard);
-            color: #fff;
-            border-color: var(--diff-hard);
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        .diff-option input:checked+.diff-label.mid {
+            background: var(--c-mid);
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+        }
+
+        .diff-option input:checked+.diff-label.hard {
+            background: var(--c-hard);
+            color: white;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
         }
 
         .btn-save {
@@ -453,29 +468,31 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 14px;
+            padding: 16px;
             border-radius: 50px;
             font-weight: 800;
-            font-size: 0.95rem;
+            font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 4px 15px var(--accent-glow);
+            box-shadow: 0 5px 20px var(--accent-glow);
         }
 
+        /* NAV */
         .bottom-nav {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(18, 18, 22, 0.95);
+            backdrop-filter: blur(15px);
             border: 1px solid var(--border);
             border-radius: 60px;
             padding: 8px 12px;
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             z-index: 100;
+            /* Mascot di z-90, jadi nav nutupin kaki mascot */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
 
         .nav-link {
@@ -485,151 +502,148 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
+            color: #666;
             text-decoration: none;
-            transition: 0.3s;
-            background: rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
         }
 
         .nav-link.active {
             background: var(--accent);
             color: white;
-            box-shadow: 0 0 10px var(--accent-glow);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
 
         .btn-fab {
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            background: var(--accent);
             color: white;
             border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 15px var(--accent-glow);
             cursor: pointer;
-            transition: 0.3s;
             transform: translateY(-5px);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
     </style>
 </head>
 
 <body>
+
     <div class="mascot-container">
         <img src="/static/reze.png" class="mascot left active">
         <img src="/static/makima.png" class="mascot right inactive">
     </div>
+
     <div class="main no-scrollbar">
         <div class="header">
             <div class="logo">Reminv<span>.</span></div>
-            <img src="/static/ibnu.jpg" class="profile-pic" alt="Profile">
+            <img src="/static/ibnu.jpg" class="profile-pic">
         </div>
+
         <div class="task-list">
             {% for task in tasks %}
             {% set days_left = (task.deadline - today).days %}
             <div class="task-card">
-                <div style="flex:1; margin-right:10px;">
-                    <div class="task-title">
-                        {{ task.title }}
-                        <span
-                            class="badge {% if task.difficulty == 1 %}b-easy{% elif task.difficulty == 2 %}b-med{% else %}b-hard{% endif %}">
-                            {% if task.difficulty == 1 %}EASY{% elif task.difficulty == 2 %}MID{% else %}HARD{% endif %}
-                        </span>
-                    </div>
-                    <div class="task-meta">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                <div class="task-info">
+                    <div class="task-title">{{ task.title }}</div>
+                    <div class="task-meta lvl-{{ task.difficulty }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
                         </svg>
-                        {% if days_left < 0 %} <span style="color:var(--danger);">Telat {{ days_left|abs }} hari</span>
-                            {% elif days_left == 0 %} <span style="color:var(--accent);">Hari Ini</span>
-                            {% else %} {{ days_left }} hari lagi
-                            {% endif %}
+                        {% if days_left < 0 %} Overdue {{ days_left|abs }} Hari {% elif days_left==0 %} HARI INI {% else
+                            %} {{ days_left }} Hari Lagi {% endif %} </div>
+                    </div>
+
+                    <div class="actions">
+                        <a href="/done/{{ task.id }}" class="btn-bubble done">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </a>
+                        <a href="/delete/{{ task.id }}" class="btn-bubble del">
+                            <svg viewBox="0 0 24 24">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
-                <div style="display:flex; gap:8px;">
-                    <a href="/done/{{ task.id }}" class="btn-icon"><svg viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12" />
-                        </svg></a>
-                    <a href="/delete/{{ task.id }}" class="btn-icon"><svg viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18" />
-                            <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg></a>
-                </div>
+                {% else %}
+                <div style="text-align: center; margin-top: 100px; color: #444; font-size: 0.9rem; font-weight: 600;">
+                    Belum ada target ledakan.</div>
+                {% endfor %}
             </div>
-            {% else %}
-            <div style="text-align: center; margin-top: 120px; color: rgba(255,255,255,0.5); font-weight:600;">Santai
-                dulu, gak ada tugas.</div>
-            {% endfor %}
         </div>
-    </div>
 
-    <div class="modal-overlay" id="addModal">
-        <div class="bubble-card">
-            <div class="bubble-title">Tugas Baru <span class="close-btn" onclick="closeModal()">✕</span></div>
-            <form action="/add" method="POST">
-                <input type="text" name="title" class="input-box" placeholder="Mau ngapain?" required autocomplete="off"
-                    id="taskInput">
-
-                <span class="section-label">Deadline</span>
-                <div class="slider-wrap">
-                    <div class="slider-header">
-                        <span id="deadlineText" class="deadline-text">Besok</span>
-                    </div>
-                    <input type="range" id="deadlineRange" name="days_until" min="0" max="31" value="1">
+        <div class="modal-overlay" id="addModal">
+            <div class="bubble-card">
+                <div class="bubble-header">
+                    <div class="bubble-title">Tugas Baru</div>
+                    <div class="close-btn" onclick="closeModal()">✕</div>
                 </div>
-
-                <span class="section-label">Tingkat Kesulitan</span>
-                <div class="diff-selector">
-                    <div class="diff-option">
-                        <input type="radio" name="difficulty" value="1" id="d1">
-                        <label class="diff-label lbl-easy" for="d1">EASY</label>
+                <form action="/add" method="POST">
+                    <input type="text" name="title" class="input-box" placeholder="Mau ngapain hari ini?" required
+                        autocomplete="off" id="taskInput">
+                    <div class="controls-grid">
+                        <div class="control-box">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="box-label">Deadline</span>
+                                <span id="deadlineText" class="box-val highlight">Besok</span>
+                            </div>
+                            <input type="range" id="deadlineRange" name="days_until" min="0" max="31" value="1">
+                        </div>
+                        <div class="control-box">
+                            <div class="diff-selector">
+                                <div class="diff-option"><input type="radio" name="difficulty" value="1" id="rad_ez">
+                                    <div class="diff-label easy">EZ</div>
+                                </div>
+                                <div class="diff-option"><input type="radio" name="difficulty" value="2" id="rad_mid"
+                                        checked>
+                                    <div class="diff-label mid">MID</div>
+                                </div>
+                                <div class="diff-option"><input type="radio" name="difficulty" value="3" id="rad_hrd">
+                                    <div class="diff-label hard">HRD</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="diff-option">
-                        <input type="radio" name="difficulty" value="2" id="d2" checked>
-                        <label class="diff-label lbl-med" for="d2">MID</label>
-                    </div>
-                    <div class="diff-option">
-                        <input type="radio" name="difficulty" value="3" id="d3">
-                        <label class="diff-label lbl-hard" for="d3">HARD</label>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-save">Simpan Tugas</button>
-            </form>
+                    <button type="submit" class="btn-save">Simpan Tugas</button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <div class="bottom-nav">
-        <a href="/" class="nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2.5" width="24" height="24">
-                <path d="M9 11l3 3L22 4" />
-                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-            </svg></a>
-        <button class="btn-fab" onclick="openModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="3">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-            </svg></button>
-        <a href="/ideas" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                width="24" height="24">
-                <path d="M9 18h6" />
-                <path d="M10 22h4" />
-                <path
-                    d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 16.5 8 4.5 4.5 0 0 0 12 3.5 4.5 4.5 0 0 0 7.5 8c0 1.57.88 2.97 2.21 3.91.56.4 1.05 1 1.29 1.77" />
-            </svg></a>
-    </div>
-    <script>
-        function openModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('taskInput').focus(); }
-        function closeModal() { document.getElementById('addModal').classList.remove('active'); }
-        document.getElementById('addModal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
-        const slider = document.getElementById('deadlineRange'); const text = document.getElementById('deadlineText');
-        slider.addEventListener('input', function () { const val = parseInt(this.value); if (val === 0) text.innerText = "Hari Ini"; else if (val === 1) text.innerText = "Besok"; else text.innerText = val + " Hari Lagi"; });
-    </script>
+        <div class="bottom-nav">
+            <a href="/" class="nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" width="22" height="22">
+                    <path d="M9 11l3 3L22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg></a>
+            <button class="btn-fab" onclick="openModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="3">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg></button>
+            <a href="/ideas" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" width="22" height="22">
+                    <path d="M9 18h6" />
+                    <path d="M10 22h4" />
+                    <path
+                        d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 16.5 8 4.5 4.5 0 0 0 12 3.5 4.5 4.5 0 0 0 7.5 8c0 1.57.88 2.97 2.21 3.91.56.4 1.05 1 1.29 1.77" />
+                </svg></a>
+        </div>
+
+        <script>
+            function openModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('taskInput').focus(); }
+            function closeModal() { document.getElementById('addModal').classList.remove('active'); }
+            document.getElementById('addModal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+            const slider = document.getElementById('deadlineRange'); const text = document.getElementById('deadlineText');
+            slider.addEventListener('input', function () { const val = parseInt(this.value); if (val === 0) text.innerText = "Hari Ini"; else if (val === 1) text.innerText = "Besok"; else text.innerText = val + " Hari Lagi"; });
+        </script>
 </body>
 
 </html>
