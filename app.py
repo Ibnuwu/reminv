@@ -2,32 +2,29 @@ from flask import Flask, render_template, request, redirect, url_for
 import pymysql
 import os
 from dotenv import load_dotenv
-from datetime import date
+from datetime import date, timedelta
 
-# Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'default_secret_key')
 
-# Fungsi Koneksi Database
+# Koneksi Database
 def get_db_connection():
     return pymysql.connect(
-        host=os.getenv('DB_HOST'),
-        user=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASSWORD'),
-        database=os.getenv('DB_NAME'),
-        port=int(os.getenv('DB_PORT', 3306)), # Pastikan port angka integer
+        host=os.getenv('DB_HOST', 'localhost'),
+        user=os.getenv('DB_USER', 'root'),
+        password=os.getenv('DB_PASSWORD', ''),
+        database=os.getenv('DB_NAME', 'reminv'),
+        port=int(os.getenv('DB_PORT', 3306)),
         cursorclass=pymysql.cursors.DictCursor
     )
 
-# --- FUNGSI BARU: Bikin Tabel Otomatis (Self-Healing) ---
 def init_db():
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Bikin tabel kalau belum ada
-            sql = """
+            cursor.execute("""
             CREATE TABLE IF NOT EXISTS tasks (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
@@ -36,24 +33,28 @@ def init_db():
                 status VARCHAR(20) DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
-            """
-            cursor.execute(sql)
+            """)
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS ideas (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                content TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """)
         conn.commit()
         conn.close()
-        print("Database aman! Tabel tasks siap.")
     except Exception as e:
-        print(f"Error connect database: {e}")
+        print(f"Error DB: {e}")
 
-# Panggil fungsi ini sekali saat aplikasi nyala
 init_db()
 
 # --- ROUTES ---
+
 @app.route('/')
 def index():
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Logika Prioritas: Status -> Score (Difficulty & Deadline)
             sql = """
                 SELECT *, 
                 (difficulty * 2 + (DATEDIFF(deadline, CURDATE()) * -1)) as priority_score 
@@ -66,26 +67,67 @@ def index():
         conn.close()
         return render_template('index.html', tasks=tasks, today=date.today())
     except Exception as e:
-        return f"Terjadi kesalahan database: {e}"
+        return f"Error: {e}"
+
+@app.route('/ideas')
+def ideas_page():
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM ideas ORDER BY created_at DESC")
+            ideas = cursor.fetchall()
+        conn.close()
+        return render_template('ideas.html', ideas=ideas)
+    except Exception as e:
+        return f"Error: {e}"
+
+# --- ACTIONS ---
 
 @app.route('/add', methods=['POST'])
 def add_task():
     try:
         title = request.form['title']
-        difficulty = request.form['difficulty']
-        deadline = request.form['deadline']
+        difficulty = request.form.get('difficulty', 2) 
+        days_str = request.form['days_until']
+        calculated_deadline = date.today() + timedelta(days=int(days_str))
         
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute(
                 "INSERT INTO tasks (title, difficulty, deadline) VALUES (%s, %s, %s)",
-                (title, difficulty, deadline)
+                (title, difficulty, calculated_deadline)
             )
         conn.commit()
         conn.close()
         return redirect(url_for('index'))
     except Exception as e:
-        return f"Gagal nambah tugas: {e}"
+        return f"Gagal: {e}"
+
+# --- ROUTE BARU: PINDAHIN NOTE KE TUGAS DENGAN OPSI ---
+@app.route('/promote_idea', methods=['POST'])
+def promote_idea():
+    try:
+        note_id = request.form['note_id']
+        title = request.form['title']
+        difficulty = request.form.get('difficulty', 2)
+        days_str = request.form['days_until']
+        
+        calculated_deadline = date.today() + timedelta(days=int(days_str))
+        
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # 1. Masukin ke Tasks
+            cursor.execute(
+                "INSERT INTO tasks (title, difficulty, deadline) VALUES (%s, %s, %s)",
+                (title, difficulty, calculated_deadline)
+            )
+            # 2. Hapus dari Ideas (karena udah jadi tugas)
+            cursor.execute("DELETE FROM ideas WHERE id = %s", (note_id,))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index')) # Lempar ke halaman tugas
+    except Exception as e:
+        return f"Gagal Promote: {e}"
 
 @app.route('/done/<int:id>')
 def mark_done(id):
@@ -105,7 +147,31 @@ def delete_task(id):
     conn.close()
     return redirect(url_for('index'))
 
+@app.route('/add_idea', methods=['POST'])
+def add_idea():
+    content = request.form['content']
+    if content:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("INSERT INTO ideas (content) VALUES (%s)", (content,))
+        conn.commit()
+        conn.close()
+    return redirect(url_for('ideas_page'))
+
+# Route convert_idea yang lama dihapus/tidak dipakai lagi karena diganti promote_idea
+@app.route('/convert_idea/<int:id>')
+def convert_idea(id):
+    return redirect(url_for('ideas_page')) 
+
+@app.route('/delete_idea/<int:id>')
+def delete_idea(id):
+    conn = get_db_connection()
+    with conn.cursor() as cursor:
+        cursor.execute("DELETE FROM ideas WHERE id = %s", (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('ideas_page'))
+
 if __name__ == '__main__':
-    # UPDATE PENTING: Ambil PORT dari Railway, kalau gak ada pake 5000
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host='0.0.0.0', port=port)

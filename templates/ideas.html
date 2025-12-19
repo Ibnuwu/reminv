@@ -4,20 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Reminv | Tasks</title>
+    <title>Reminv | Notes</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #020205;
-            --bg-card: rgba(20, 20, 30, 0.5);
-            --border: rgba(139, 92, 246, 0.3);
+            --bg-body: #050000;
+            --bg-card: rgba(30, 20, 20, 0.5);
+            --border: rgba(244, 63, 94, 0.3);
             --text-main: #ffffff;
             --text-muted: #9ca3af;
-            --accent: #8b5cf6;
-            --accent-light: #a78bfa;
-            --accent-glow: rgba(139, 92, 246, 0.3);
-            --danger: #ff3333;
-            /* WARNA DIFFICULTY */
+            --accent: #f43f5e;
+            --accent-glow: rgba(244, 63, 94, 0.3);
+            /* Warna Difficulty */
             --diff-easy: #10b981;
             --diff-med: #facc15;
             --diff-hard: #ef4444;
@@ -27,7 +25,6 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -37,7 +34,7 @@
             height: 100vh;
             display: flex;
             overflow: hidden;
-            background-image: linear-gradient(135deg, #0a0a10 0%, #151020 50%, #05020a 100%);
+            background-image: linear-gradient(135deg, #150505 0%, #200b0b 50%, #0a0202 100%);
             position: relative;
         }
 
@@ -50,7 +47,7 @@
             height: 200%;
             background: radial-gradient(circle at center, var(--accent-glow) 0%, transparent 40%);
             opacity: 0.1;
-            animation: auroraMove 15s infinite alternate linear;
+            animation: auroraMove 15s infinite alternate-reverse linear;
             pointer-events: none;
         }
 
@@ -60,7 +57,7 @@
             }
 
             100% {
-                transform: translate(50px, 50px);
+                transform: translate(-50px, 50px);
             }
         }
 
@@ -85,7 +82,6 @@
             z-index: 10;
         }
 
-        /* HEADER CLEAN */
         .header {
             margin-bottom: 10px;
             display: flex;
@@ -97,7 +93,6 @@
         .logo {
             font-size: 1.2rem;
             font-weight: 800;
-            letter-spacing: -0.5px;
         }
 
         .logo span {
@@ -151,11 +146,11 @@
 
             0%,
             100% {
-                transform: translateY(0) scale(1.02);
+                transform: translateY(0) scale(1.05);
             }
 
             50% {
-                transform: translateY(-10px) scale(1.02);
+                transform: translateY(-15px) scale(1.05);
             }
         }
 
@@ -166,94 +161,68 @@
             z-index: 1;
         }
 
-        .task-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
-        .task-card {
-            background: rgba(20, 20, 25, 0.6);
+        .note-card {
+            background: rgba(25, 20, 20, 0.6);
             backdrop-filter: blur(10px);
             border: 1px solid var(--border);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             padding: 16px;
             border-radius: 16px;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: space-between;
+            min-height: 150px;
             transition: 0.3s;
         }
 
-        .task-card:hover {
+        .note-card:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
         }
 
-        .task-title {
-            font-size: 0.95rem;
-            font-weight: 600;
+        .note-content {
+            font-size: 0.9rem;
             color: #fff;
-            margin-bottom: 6px;
+            white-space: pre-wrap;
             word-break: break-word;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .note-actions {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            gap: 10px;
+            margin-top: auto;
         }
 
-        /* BADGE DIFFICULTY DI LIST TUGAS (DI BAGUSIN) */
-        .badge {
-            font-size: 0.6rem;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 1px solid transparent;
-        }
-
-        .b-easy {
-            color: var(--diff-easy);
-            border-color: var(--diff-easy);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .b-med {
-            color: var(--diff-med);
-            border-color: var(--diff-med);
-            background: rgba(250, 204, 21, 0.1);
-        }
-
-        .b-hard {
-            color: var(--diff-hard);
-            border-color: var(--diff-hard);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .task-meta {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 700;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .btn-mini {
+            flex: 1;
             border: 1px solid var(--border);
+            padding: 6px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
             color: var(--text-muted);
             text-decoration: none;
+            transition: 0.2s;
             background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
         }
 
-        /* MODAL BUBBLE */
+        .btn-mini:hover {
+            color: white;
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -286,7 +255,7 @@
         }
 
         .bubble-card {
-            background: #151518;
+            background: #181515;
             width: 90%;
             max-width: 380px;
             border-radius: 24px;
@@ -318,6 +287,7 @@
             color: #fff;
         }
 
+        textarea,
         .input-box {
             width: 100%;
             background: rgba(0, 0, 0, 0.3);
@@ -331,11 +301,17 @@
             font-family: inherit;
         }
 
+        textarea {
+            resize: none;
+            min-height: 120px;
+        }
+
+        textarea:focus,
         .input-box:focus {
             border-color: var(--accent);
         }
 
-        /* --- SLIDER & DIFFICULTY BARU --- */
+        /* STYLE PILIHAN BARU */
         .section-label {
             font-size: 0.75rem;
             color: #888;
@@ -346,7 +322,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Slider */
         .slider-wrap {
             margin-bottom: 20px;
             background: rgba(255, 255, 255, 0.03);
@@ -363,7 +338,7 @@
         }
 
         .deadline-text {
-            color: var(--accent-light);
+            color: #fca5a5;
             font-weight: 800;
             font-size: 0.9rem;
         }
@@ -426,7 +401,6 @@
             transition: 0.2s;
         }
 
-        /* Warna saat dipilih */
         .diff-option input:checked+.diff-label.lbl-easy {
             background: var(--diff-easy);
             color: #000;
@@ -466,7 +440,7 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(15, 15, 20, 0.95);
+            background: rgba(20, 10, 10, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid var(--border);
             border-radius: 60px;
@@ -501,7 +475,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            background: linear-gradient(135deg, var(--accent), #fa8b9e);
             color: white;
             border: none;
             display: flex;
@@ -517,118 +491,107 @@
 
 <body>
     <div class="mascot-container">
-        <img src="/static/reze.png" class="mascot left active">
-        <img src="/static/makima.png" class="mascot right inactive">
+        <img src="/static/reze.png" class="mascot left inactive">
+        <img src="/static/makima.png" class="mascot right active">
     </div>
     <div class="main no-scrollbar">
         <div class="header">
             <div class="logo">Reminv<span>.</span></div>
             <img src="/static/ibnu.jpg" class="profile-pic" alt="Profile">
         </div>
-        <div class="task-list">
-            {% for task in tasks %}
-            {% set days_left = (task.deadline - today).days %}
-            <div class="task-card">
-                <div style="flex:1; margin-right:10px;">
-                    <div class="task-title">
-                        {{ task.title }}
-                        <span
-                            class="badge {% if task.difficulty == 1 %}b-easy{% elif task.difficulty == 2 %}b-med{% else %}b-hard{% endif %}">
-                            {% if task.difficulty == 1 %}EASY{% elif task.difficulty == 2 %}MID{% else %}HARD{% endif %}
-                        </span>
-                    </div>
-                    <div class="task-meta">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                        </svg>
-                        {% if days_left < 0 %} <span style="color:var(--danger);">Telat {{ days_left|abs }} hari</span>
-                            {% elif days_left == 0 %} <span style="color:var(--accent);">Hari Ini</span>
-                            {% else %} {{ days_left }} hari lagi
-                            {% endif %}
-                    </div>
-                </div>
-                <div style="display:flex; gap:8px;">
-                    <a href="/done/{{ task.id }}" class="btn-icon"><svg viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12" />
-                        </svg></a>
-                    <a href="/delete/{{ task.id }}" class="btn-icon"><svg viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <line x1="18" y1="6" x2="6" y2="18" />
-                            <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg></a>
+        <div class="grid">
+            {% for idea in ideas %}
+            <div class="note-card">
+                <div class="note-content">{{ idea.content }}</div>
+                <div class="note-actions">
+                    <button class="btn-mini"
+                        onclick="openPromoteModal('{{ idea.id }}', '{{ idea.content|replace('\n', ' ')|replace("'", "\\'") }}')">Tugas</button>
+                    <a href="/delete_idea/{{ idea.id }}" class="btn-mini"
+                        style="color:#ef4444; border-color: rgba(239,68,68,0.5);">Hapus</a>
                 </div>
             </div>
             {% else %}
-            <div style="text-align: center; margin-top: 120px; color: rgba(255,255,255,0.5); font-weight:600;">Santai
-                dulu, gak ada tugas.</div>
+            <div style="text-align: center; margin-top: 120px; color: rgba(255,255,255,0.5); grid-column: 1/-1;">Belum
+                ada catatan.</div>
             {% endfor %}
         </div>
     </div>
 
-    <div class="modal-overlay" id="addModal">
+    <div class="modal-overlay" id="noteModal">
         <div class="bubble-card">
-            <div class="bubble-title">Tugas Baru <span class="close-btn" onclick="closeModal()">✕</span></div>
-            <form action="/add" method="POST">
-                <input type="text" name="title" class="input-box" placeholder="Mau ngapain?" required autocomplete="off"
-                    id="taskInput">
+            <div class="bubble-title">Catatan Baru <span class="close-btn" onclick="closeModal('noteModal')">✕</span>
+            </div>
+            <form action="/add_idea" method="POST">
+                <textarea name="content" placeholder="Tulis ide..." required id="noteInput"></textarea>
+                <button type="submit" class="btn-save">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="promoteModal">
+        <div class="bubble-card">
+            <div class="bubble-title">Jadikan Tugas <span class="close-btn"
+                    onclick="closeModal('promoteModal')">✕</span></div>
+            <form action="/promote_idea" method="POST">
+                <input type="hidden" name="note_id" id="promoteNoteId">
+                <input type="text" name="title" class="input-box" id="promoteTitle" required>
 
                 <span class="section-label">Deadline</span>
                 <div class="slider-wrap">
                     <div class="slider-header">
-                        <span id="deadlineText" class="deadline-text">Besok</span>
+                        <span id="promoteDeadlineText" class="deadline-text">Besok</span>
                     </div>
-                    <input type="range" id="deadlineRange" name="days_until" min="0" max="31" value="1">
+                    <input type="range" id="promoteRange" name="days_until" min="0" max="31" value="1">
                 </div>
 
                 <span class="section-label">Tingkat Kesulitan</span>
                 <div class="diff-selector">
                     <div class="diff-option">
-                        <input type="radio" name="difficulty" value="1" id="d1">
-                        <label class="diff-label lbl-easy" for="d1">EASY</label>
+                        <input type="radio" name="difficulty" value="1" id="pd1">
+                        <label class="diff-label lbl-easy" for="pd1">EASY</label>
                     </div>
                     <div class="diff-option">
-                        <input type="radio" name="difficulty" value="2" id="d2" checked>
-                        <label class="diff-label lbl-med" for="d2">MID</label>
+                        <input type="radio" name="difficulty" value="2" id="pd2" checked>
+                        <label class="diff-label lbl-med" for="pd2">MID</label>
                     </div>
                     <div class="diff-option">
-                        <input type="radio" name="difficulty" value="3" id="d3">
-                        <label class="diff-label lbl-hard" for="d3">HARD</label>
+                        <input type="radio" name="difficulty" value="3" id="pd3">
+                        <label class="diff-label lbl-hard" for="pd3">HARD</label>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-save">Simpan Tugas</button>
+                <button type="submit" class="btn-save">Pindahkan</button>
             </form>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <a href="/" class="nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2.5" width="24" height="24">
+        <a href="/" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                width="24" height="24">
                 <path d="M9 11l3 3L22 4" />
                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
             </svg></a>
-        <button class="btn-fab" onclick="openModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="3">
+        <button class="btn-fab" onclick="openModal('noteModal')"><svg viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
             </svg></button>
-        <a href="/ideas" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                width="24" height="24">
+        <a href="/ideas" class="nav-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.5" width="24" height="24">
                 <path d="M9 18h6" />
                 <path d="M10 22h4" />
                 <path
                     d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 16.5 8 4.5 4.5 0 0 0 12 3.5 4.5 4.5 0 0 0 7.5 8c0 1.57.88 2.97 2.21 3.91.56.4 1.05 1 1.29 1.77" />
             </svg></a>
     </div>
+
     <script>
-        function openModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('taskInput').focus(); }
-        function closeModal() { document.getElementById('addModal').classList.remove('active'); }
-        document.getElementById('addModal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
-        const slider = document.getElementById('deadlineRange'); const text = document.getElementById('deadlineText');
-        slider.addEventListener('input', function () { const val = parseInt(this.value); if (val === 0) text.innerText = "Hari Ini"; else if (val === 1) text.innerText = "Besok"; else text.innerText = val + " Hari Lagi"; });
+        function openModal(id) { document.getElementById(id).classList.add('active'); if (id === 'noteModal') document.getElementById('noteInput').focus(); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openPromoteModal(id, content) { document.getElementById('promoteNoteId').value = id; document.getElementById('promoteTitle').value = content; openModal('promoteModal'); }
+        document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('active'); }));
+        const pSlider = document.getElementById('promoteRange'); const pText = document.getElementById('promoteDeadlineText');
+        pSlider.addEventListener('input', function () { const val = parseInt(this.value); if (val === 0) pText.innerText = "Hari Ini"; else if (val === 1) pText.innerText = "Besok"; else pText.innerText = val + " Hari Lagi"; });
     </script>
 </body>
 
